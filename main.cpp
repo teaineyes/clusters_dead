@@ -52,7 +52,7 @@ std::string generateReportText(const std::string& user, const std::string& user_
     return selectedText;
 }
 
-size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     ((std::string*)userp)->append((char*)contents, size * nmemb);
     return size * nmemb;
 }
@@ -156,7 +156,7 @@ std::vector<std::string> getProxiesFromWebsite(const std::string& url) {
 
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
@@ -221,7 +221,7 @@ void sendComplaint(const std::string& proxy, const std::string& message, const s
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
         res = curl_easy_perform(curl);
