@@ -1,12 +1,12 @@
 <pre>
-MM'""""'YMM dP                     dP                                 M""""""'YMM                         dP 
-M' .mmm. `M 88                     88                                 M  mmmm. `M                         88 
-M  MMMMMooM 88 dP    dP .d8888b. d8888P .d8888b. 88d888b. .d8888b.    M  MMMMM  M .d8888b. .d8888b. .d888b88 
-M  MMMMMMMM 88 88    88 Y8ooooo.   88   88ooood8 88'  `88 Y8ooooo.    M  MMMMM  M 88ooood8 88'  `88 88'  `88 
-M. `MMM' .M 88 88.  .88       88   88   88.  ... 88             88    M  MMMM' .M 88.  ... 88.  .88 88.  .88 
-MM.     .dM dP `88888P' `88888P'   dP   `88888P' dP       `88888P'    M       .MM `88888P' `88888P8 `88888P8 
-MMMMMMMMMMM                                                           MMMMMMMMMMM                            
-                                                                                                                                                                        
+MM'""""'YMM       dP                         dP 
+M' .mmm. `M       88                         88 
+M  MMMMMooM .d888b88 .d8888b. .d8888b. .d888b88 
+M  MMMMMMMM 88'  `88 88ooood8 88'  `88 88'  `88 
+M. `MMM' .M 88.  .88 88.  ... 88.  .88 88.  .88 
+MM.     .dM `88888P8 `88888P' `88888P8 `88888P8 
+MMMMMMMMMMM                                     
+                                                                                                                                                                                                            
 </pre>
 
 # Clusters Dead
