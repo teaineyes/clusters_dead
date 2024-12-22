@@ -57,8 +57,43 @@ size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     return size * nmemb;
 }
 
-std::string generateFullName() {
-    std::vector<std::string> firstNames = {
+std::string generateRandomPhoneNumber() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0, 9);
+
+    const std::vector<std::pair<std::string, std::vector<std::string>>> countryOperators = {
+        {"+1", {"201", "202", "203", "204", "205", "206", "207", "208", "209", "210",
+                  "212", "213", "214", "215", "216", "217", "218", "219", "224", "225"}},
+        {"+44", {"740", "750", "760", "770", "780", "790", "800", "810", "820", "830",
+                  "840", "850", "860", "870", "880", "890"}},
+        {"+7",  {"900", "901", "902", "903", "904", "905", "906", "907", "908", "909", 
+                 "911", "912", "913", "914", "915", "916", "917", "918", "919", "920", 
+                 "921", "922", "923", "924", "925", "926", "927", "928", "929"}},
+        {"+380", {"50", "63", "66", "67", "68", "73", "91", "92", "93", "94", "95", 
+                  "96", "97", "98", "99"}} 
+    };
+
+    std::uniform_int_distribution<> countryDist(0, countryOperators.size() - 1);
+    const auto& selectedCountry = countryOperators[countryDist(gen)];
+    const std::string& countryCode = selectedCountry.first;
+
+    std::uniform_int_distribution<> operatorDist(0, selectedCountry.second.size() - 1);
+    const std::string& operatorCode = selectedCountry.second[operatorDist(gen)];
+
+    std::string phoneNumber = countryCode + operatorCode;
+
+    int remainingDigits = (countryCode == "+1") ? 7 : (countryCode == "+44") ? 7 : 7; 
+
+    for (int i = 0; i < remainingDigits; ++i) {
+        phoneNumber += std::to_string(dist(gen));
+    }
+
+    return phoneNumber;
+}
+
+std::string generateFullName(const std::string& phoneNumber = "") {
+    std::vector<std::string> englishFirstNames = {
         "John", "Alice", "Michael", "Sarah", "David", "Emily", "James", "Sophia", "William", "Olivia",
         "Ethan", "Isabella", "Benjamin", "Amelia", "Lucas", "Mia", "Henry", "Chloe", "Alexander", "Charlotte",
         "Jackson", "Victoria", "Owen", "Grace", "Jack", "Harper", "Samuel", "Avery", "Matthew", "Lily",
@@ -72,7 +107,7 @@ std::string generateFullName() {
         "Hunter", "Faith", "Connor", "Elena", "Brandon", "Aurora", "Parker", "Brooke", "Tristan", "Jasmine"
     };
 
-    std::vector<std::string> lastNames = {
+    std::vector<std::string> englishLastNames = {
         "Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia", "Martinez", "Hernandez",
         "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee",
         "Perez", "White", "Harris", "Clark", "Lewis", "Roberts", "Walker", "Young", "Allen", "King",
@@ -85,15 +120,80 @@ std::string generateFullName() {
         "Wright", "Chapman", "Fox", "Ellis", "Armstrong", "Crawford", "Dean", "Watson", "Peters", "Murphy"
     };
 
+    std::vector<std::string> russianFirstNames = {
+        "Ivan", "Dmitry", "Alexei", "Sergey", "Mikhail", "Viktor", "Nikolai", "Yuri", "Andrei", "Pavel", 
+        "Maxim", "Alexandr", "Leonid", "Roman", "Kirill", "Igor", "Oleg", "Vadim", "Artur", "Denis", 
+        "Vladislav", "Evgeny", "Petr", "Gennady", "Boris", "Vyacheslav", "Stanislav", "Valery", "Konstantin", 
+        "Nikita", "Yaroslav", "Maksim", "Vsevolod", "Yegor", "Semyon", "Artem", "Aleksey", "Igor", "Vitali", 
+        "Petr", "Oleg", "Dmitriy", "Tamerlan", "Makar", "Kamil", "Arseniy", "Vlad", "Mihail", "Yegor", 
+        "Nikolay", "Borys", "Roman", "Valery", "Artyom", "Vyacheslav", "Pavel", "Anton", "Alexei", "Daniil", 
+        "Mikhail", "Egor", "Semen", "Dmitri", "Lev", "Kirill", "Svetoslav", "Filipp", "Stanislav", "Fedor", 
+        "Ilya", "Yegor", "Ruslan", "Aleksei", "Sergey", "Valentin", "Vladimir", "Maksim", "Dmitriy", "Roman", 
+        "Yuriy", "Alexander", "Timofey", "Anton", "Aleksei", "Eugene", "Boris", "Yuri", "Vsevolod"
+    };
+
+    std::vector<std::string> russianLastNames = {
+        "Ivanov", "Petrov", "Sidorov", "Smirnov", "Kuznetsov", "Popov", "Vasiliev", "Novikov", "Morozov", "Fedorov",
+        "Orlov", "Tarasov", "Karpov", "Semenov", "Pavlov", "Mikhailov", "Dmitriev", "Belyaev", "Zaharov", "Krylov",
+        "Frolov", "Gorbachov", "Borisov", "Chernyshev", "Tikhonov", "Korolev", "Kachur", "Shishkin", "Vasilenko",
+        "Nikitin", "Panteleev", "Zhuravlev", "Rogozin", "Kulikov", "Lavrov", "Makarov", "Aleksandrov", "Karasev",
+        "Varnavsky", "Yermakov", "Shchukin", "Romanov", "Bocharnikov", "Galkin", "Zhukov", "Sergiev", "Salnikov",
+        "Matveev", "Savelyev", "Kovalev", "Pirogov", "Lopatin", "Dmitriev", "Morozov", "Shirokov", "Belyaev", 
+        "Strakhov", "Maksimov", "Krasnov", "Belyakov", "Kuzmin", "Likhachev", "Sharapov", "Goncharov", "Tregubov", 
+        "Varlamov", "Andreev", "Markov", "Romanov", "Shustov", "Grigoryev", "Shvetsov", "Kharlov", "Bessarabov", 
+        "Skorik", "Klochkov", "Solntsev", "Koryakov", "Danilov", "Shturman", "Goncharov", "Vasiliev", "Golovin"
+    };
+
+    std::vector<std::string> ukrainianFirstNames = {
+        "Bohdan", "Taras", "Serhiy", "Mykola", "Yevhen", "Oleh", "Andriy", "Vladyslav", "Danylo", "Artem",
+        "Viktor", "Vitaliy", "Roman", "Oleksandr", "Ihor", "Yuriy", "Vladislav", "Maxym", "Pavlo", "Sergiy",
+        "Vadym", "Leonid", "Borys", "Igor", "Sergey", "Tymur", "Denys", "Ostap", "Vsevolod", "Anatoliy",
+        "Ruslan", "Kyrylo", "Dmytro", "Ivan", "Artem", "Maksym", "Viktoriya", "Diana", "Valeriya", "Ksenia",
+        "Volodymyr", "Svyatoslav", "Olexandr", "Serhiy", "Yevheniy", "Nazar", "Petr", "Yuriy", "Roman", 
+        "Andriy", "Tymofiy", "Yaroslav", "Vladislav", "Vlad", "Maksym", "Myroslav", "Olexiy", "Taras", 
+        "Mikhail", "Ostap", "Mykola", "Aleksey", "Semen", "Petr", "Dmitriy", "Nikolay", "Yuriy", "Dmitro", 
+        "Sergey", "Igor", "Evgen", "Mikhail", "Vasyl", "Borys", "Danylo", "Bohdan", "Vitaliy", "Roman",
+        "Yevhen", "Igor", "Artem", "Maksym", "Tymur", "Iryna", "Alina", "Kateryna", "Olga", "Anastasia"
+    };
+
+    std::vector<std::string> ukrainianLastNames = {
+        "Shevchenko", "Kovalenko", "Bondarenko", "Tkachenko", "Melnyk", "Belyk", "Marchenko", "Petriv", "Savchuk", "Hrytsenko",
+        "Zhyvotkov", "Dubovik", "Lysenko", "Bohdanov", "Kulyk", "Shulha", "Krut", "Kravchuk", "Kushnir", "Shpak",
+        "Solodovnyk", "Yushchenko", "Borysov", "Filipchuk", "Kholod", "Klymenko", "Chorny", "Olenchuk", "Klimenko", 
+        "Chernenko", "Romanenko", "Tarasenko", "Hlushko", "Kovbas", "Chernov", "Taran", "Varenytsia", "Petryshyn", "Fedoriv",
+        "Voloshyn", "Kovach", "Chizh", "Krasivskyi", "Kozak", "Horbenko", "Kozel", "Baran", "Dudchenko", "Krivoruchko", 
+        "Solohub", "Kovbasa", "Holub", "Rudyk", "Stepanenko", "Panteleev", "Bazhuk", "Malyk", "Cherevko", "Popovych",
+        "Kovach", "Mykhailov", "Yablonski", "Fedorov", "Kolos", "Sushchenko", "Tyschenko", "Shyshkova", "Vernigor", "Barynya"
+    };
+
+    std::string countryCode = phoneNumber.substr(0, 3);
+    
+    std::vector<std::string> firstNames;
+    std::vector<std::string> lastNames;
+
+    if (countryCode == "+1") { 
+        firstNames = englishFirstNames;
+        lastNames = englishLastNames;
+    } else if (countryCode == "+44") {
+        firstNames = englishFirstNames;
+        lastNames = englishLastNames;
+    } else if (countryCode == "+7") {
+        firstNames = russianFirstNames;
+        lastNames = russianLastNames;
+    } else if (countryCode == "+380") {
+        firstNames = ukrainianFirstNames;
+        lastNames = ukrainianLastNames;
+    }
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> firstDist(0, firstNames.size() - 1);
-    std::uniform_int_distribution<> lastDist(0, lastNames.size() - 1);
+    std::uniform_int_distribution<> firstNameDist(0, firstNames.size() - 1);
+    std::uniform_int_distribution<> lastNameDist(0, lastNames.size() - 1);
 
-    std::string fullName = firstNames[firstDist(gen)] + " " + lastNames[lastDist(gen)];
+    std::string firstName = firstNames[firstNameDist(gen)];
+    std::string lastName = lastNames[lastNameDist(gen)];
 
-    return fullName;
+    return firstName + " " + lastName;
 }
 
 std::string generateRandomEmail() {
@@ -115,36 +215,6 @@ std::string generateRandomEmail() {
 
     return name + "@" + domains[dist_domain(gen)];
 }
-
-std::string generateRandomPhoneNumber() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, 9);
-
-    const std::vector<std::pair<std::string, std::vector<std::string>>> countryOperators = {
-        {"+1", {"201", "202", "203", "204", "205", "206", "207", "208", "209", "210",
-                  "212", "213", "214", "215", "216", "217", "218", "219", "224", "225"}},
-        {"+44", {"740", "750", "760", "770", "780", "790", "800", "810", "820", "830",
-                  "840", "850", "860", "870", "880", "890"}} 
-    };
-
-    std::uniform_int_distribution<> countryDist(0, countryOperators.size() - 1);
-    const auto& selectedCountry = countryOperators[countryDist(gen)];
-    const std::string& countryCode = selectedCountry.first;
-
-    std::uniform_int_distribution<> operatorDist(0, selectedCountry.second.size() - 1);
-    const std::string& operatorCode = selectedCountry.second[operatorDist(gen)];
-
-    std::string phoneNumber = countryCode + operatorCode;
-    int remainingDigits = (countryCode == "+1") ? 7 : 6; 
-
-    for (int i = 0; i < remainingDigits; ++i) {
-        phoneNumber += std::to_string(dist(gen));
-    }
-
-    return phoneNumber;
-}
-
 
 std::vector<std::string> getProxiesFromWebsite(const std::string& url) {
     CURL* curl;
@@ -260,13 +330,10 @@ int main() {
     `88bo,__,o,\8o888   888.     88,  88,  88b    ,o,888    .     88,     888_,o8P'88b    ,o,888   88888o,,od8P
       "YUMMMMMP"MM;"YUM" MP"YUMMMMP"  MMM   "YUMMMMP""MM,   "YUMMMMP"     MMMMP"`   "YUMMMMP" "YUM" MP"YUMMMP"           
                         
-                        </ Developer -> Team Enclosure / Version -> Alpha / Build -> 3a />
-                            </ Changelog -> Generating Legal Names updated -> 
-                                            Added .txt support -> 
-                                            Added username support />
-                            </ Backlog -> Deleted +7, +380, +49 numbers and operators ->
-                                            Deleted reports templates />
-                                                             
+                        </ Developer -> Team Enclosure / Version -> Alpha / Build -> 4a />
+                                </ Changelog -> Generating Legal Names updated -> 
+                                     Added +7 +380 numbers and operators -> 
+
     )";
 
     std::vector<std::string> proxies = getProxiesFromWebsite("YOUR OWN PROXY URL");
