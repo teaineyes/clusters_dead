@@ -50,7 +50,8 @@ Open the compiled ".exe" file and use it.
 
 - Support custom reports ( in .txt format ) with placeholders
 - Random email generation 
-- Random number generation ( +1, +44 ) 
+- Random number generation ( +1, +44, +7, +380)
+- Random Legal Name generation
 - Proxy support
 
 ## Make custom reports 
